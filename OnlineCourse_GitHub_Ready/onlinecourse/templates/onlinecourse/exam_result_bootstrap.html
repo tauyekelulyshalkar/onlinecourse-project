@@ -1,0 +1,21 @@
+{% extends "onlinecourse/base.html" %}
+{% block title %}Exam results | {{ course.name }}{% endblock %}
+{% block content %}
+<p class="text-muted">{{ course.name }} / FINAL EXAM</p>
+<div class="alert {% if passed %}alert-success{% else %}alert-warning{% endif %}">
+<h1>{% if passed %}Congratulations, {{ user.username }}!{% else %}Keep practising, {{ user.username }}!{% endif %}</h1>
+<p class="fs-4 mb-1">Score: <strong>{{ submission.score|floatformat:0 }} / 100</strong></p>
+<p class="mb-0">{{ submission.earned_points }} / {{ submission.total_points }} points · Pass mark: 80% · {% if passed %}Passed{% else %}Not passed{% endif %}</p>
+</div>
+<h2 class="mb-3">Exam results</h2>
+{% for result in results %}
+<article class="card shadow-sm">
+<div class="d-flex justify-content-between"><h3 class="h5">{{ forloop.counter }}. {{ result.question }}</h3>
+<strong class="{% if result.correct %}text-success{% else %}text-danger{% endif %}">{{ result.points }}/{{ result.max_points }}</strong></div>
+<p class="{% if result.correct %}text-success{% else %}text-danger{% endif %}">{% if result.correct %}Correct{% else %}Incorrect{% endif %}</p>
+<ul class="mb-0">{% for choice in result.choices %}
+<li class="{% if choice.is_correct %}text-success{% elif choice.selected %}text-danger{% endif %}">{{ choice.text }}{% if choice.selected %} — Your answer{% endif %}{% if choice.is_correct %} — Correct answer{% endif %}</li>
+{% endfor %}</ul></article>
+{% endfor %}
+<a class="btn btn-primary" href="{% url 'onlinecourse:course_details' course.id %}">Return to course / Retry</a>
+{% endblock %}
